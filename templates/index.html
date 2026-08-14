@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jarvis</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; background: #111; color: #eee; }
+    button { font-size: 24px; padding: 20px 40px; border-radius: 50px; border: none; background: #2563EB; color: white; cursor: pointer; }
+    button.listening { background: #EF4444; }
+    #output { margin-top: 30px; font-size: 18px; max-width: 500px; margin-left: auto; margin-right: auto; }
+  </style>
+</head>
+<body>
+  <h1>Jarvis</h1>
+  <button id="micBtn">🎤 Tap to talk</button>
+  <div id="output"></div>
+
+  <script>
+    const micBtn = document.getElementById("micBtn");
+    const output = document.getElementById("output");
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+
+    micBtn.onclick = () => {
+      recognition.start();
+      micBtn.classList.add("listening");
+      micBtn.textContent = "Listening...";
+    };
+
+    recognition.onresult = async (event) => {
+      const heard = event.results[0][0].transcript;
+      output.innerHTML = "You said: " + heard;
+      micBtn.textContent = "Thinking...";
+
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: heard }),
+      });
+      const data = await res.json();
+
+      output.innerHTML += "<br><br>Jarvis: " + data.reply;
+
+      const utterance = new SpeechSynthesisUtterance(data.reply);
+      speechSynthesis.speak(utterance);
+
+      micBtn.classList.remove("listening");
+      micBtn.textContent = "🎤 Tap to talk";
+    };
+
+    recognition.onerror = () => {
+      micBtn.classList.remove("listening");
+      micBtn.textContent = "🎤 Tap to talk";
+    };
+  </script>
+</body>
+</html>
