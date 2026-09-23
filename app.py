@@ -36,7 +36,7 @@ def speak():
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
-audio_response = client.audio.speech.create(
+    audio_response = client.audio.speech.create(
         model="canopylabs/orpheus-v1-english",
         voice="autumn",
         input=text,
