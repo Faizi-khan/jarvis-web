@@ -20,7 +20,7 @@ def chat():
         return jsonify({"reply": "I didn't catch that."})
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=[
             {"role": "system", "content": "You are Jarvis, a helpful and concise voice assistant. Keep replies short and conversational, since they'll be spoken out loud."},
             {"role": "user", "content": user_message},
