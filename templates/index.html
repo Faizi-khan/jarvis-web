@@ -21,6 +21,19 @@
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
 
+    async function speak(text) {
+      const res = await fetch("/speak", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+
+      const audioBlob = await res.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    }
+
     micBtn.onclick = () => {
       recognition.start();
       micBtn.classList.add("listening");
@@ -41,8 +54,7 @@
 
       output.innerHTML += "<br><br>Jarvis: " + data.reply;
 
-      const utterance = new SpeechSynthesisUtterance(data.reply);
-      speechSynthesis.speak(utterance);
+      await speak(data.reply);
 
       micBtn.classList.remove("listening");
       micBtn.textContent = "🎤 Tap to talk";
@@ -52,6 +64,8 @@
       micBtn.classList.remove("listening");
       micBtn.textContent = "🎤 Tap to talk";
     };
-  </script>
+</script>
+
 </body>
 </html>
+
