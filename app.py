@@ -36,13 +36,12 @@ def speak():
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
-    audio_response = client.audio.speech.create(
-        model="playai-tts",
-        voice="Arista-PlayAI",
+audio_response = client.audio.speech.create(
+        model="canopylabs/orpheus-v1-english",
+        voice="autumn",
         input=text,
         response_format="wav",
     )
-
     return Response(audio_response.read(), mimetype="audio/wav")
 
 if __name__ == "__main__":
