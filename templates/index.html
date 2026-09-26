@@ -123,9 +123,10 @@
     micBtn.textContent = "🎤 Tap to talk";
   };
 
-  recognition.onerror = () => {
-    micBtn.classList.remove("listening");
-    micBtn.textContent = "🎤 Tap to talk";
+  recognition.onerror = (event) => {
+  output.innerHTML = "Mic error: " + event.error;
+  micBtn.classList.remove("listening");
+  micBtn.textContent = "🎤 Tap to talk";
   };
 </script>
 </body>
